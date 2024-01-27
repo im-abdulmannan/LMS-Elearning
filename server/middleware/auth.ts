@@ -41,9 +41,11 @@ export const authorizeRole = (...roles: string[]) => {
       return next(
         new ErrorHandler(
           `Roles: ${req.user?.role} is not allowed to access this resource`,
-          400
+          403
         )
       );
     }
+
+    next();
   };
 };
