@@ -4,6 +4,7 @@ import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import { ErrorMiddleware } from "./middleware/errors";
 import courseRouter from "./routes/courseRoute";
+import notificationRouter from "./routes/notificationRoute";
 import orderRouter from "./routes/orderRoute";
 import userRouter from "./routes/userRoute";
 export const app = express();
@@ -25,6 +26,7 @@ app.use(
 app.use("/api/v1", userRouter);
 app.use("/api/v1", courseRouter);
 app.use("/api/v1", orderRouter);
+app.use("/api/v1", notificationRouter);
 
 // testing api
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {

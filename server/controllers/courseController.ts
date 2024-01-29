@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import path from "path";
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors";
 import courseModel from "../models/courseModel";
+import notificationModel from "../models/notificationModel";
 import { createCourse } from "../services/courseService";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
@@ -193,6 +194,13 @@ export const addQuestionInCourse = catchAsyncErrors(
       };
 
       courseContent.questions.push(newQuestion);
+
+      await notificationModel.create({
+        user: req.user?._id,
+        title: "New question",
+        message: `You have a new question in ${courseContent.title}`,
+      });
+
       await course?.save();
 
       res.status(201).json({
@@ -253,6 +261,11 @@ export const addAnswerToQuestion = catchAsyncErrors(
 
       if (req.user?._id === question.user?.id) {
         // create new notification object
+        await notificationModel.create({
+          user: req.user?._id,
+          title: "New question reply",
+          message: `You have a new answer in ${courseContent.title}`,
+        })
       } else {
         const data = {
           name: question.user.name,
