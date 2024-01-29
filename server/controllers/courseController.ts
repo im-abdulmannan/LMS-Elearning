@@ -6,7 +6,7 @@ import path from "path";
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors";
 import courseModel from "../models/courseModel";
 import notificationModel from "../models/notificationModel";
-import { createCourse } from "../services/courseService";
+import { createCourse, getAllCoursesService } from "../services/courseService";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
@@ -265,7 +265,7 @@ export const addAnswerToQuestion = catchAsyncErrors(
           user: req.user?._id,
           title: "New question reply",
           message: `You have a new answer in ${courseContent.title}`,
-        })
+        });
       } else {
         const data = {
           name: question.user.name,
@@ -398,6 +398,17 @@ export const addReplyToReview = catchAsyncErrors(
         success: true,
         course: course,
       });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// get all courses -- admin
+export const getAllCoursesByAdmin = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllCoursesService(res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

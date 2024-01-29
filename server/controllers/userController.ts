@@ -6,7 +6,7 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import path from "path";
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors";
 import userModel, { IUser } from "../models/userModel";
-import { getUserById } from "../services/userService";
+import { getAllUsersService, getUserById } from "../services/userService";
 import ErrorHandler from "../utils/ErrorHandler";
 import {
   accessTokenOptions,
@@ -352,7 +352,7 @@ export const updateAvatar = catchAsyncErrors(
       const userId = req.user?._id;
       const user = await userModel.findById(userId);
 
-      if(!user) {
+      if (!user) {
         return next(new ErrorHandler("Invalid User", 400));
       }
 
@@ -390,6 +390,17 @@ export const updateAvatar = catchAsyncErrors(
         message: "Avatar saved successfully",
         user: user,
       });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// get all users -- admin
+export const getAllUsersByAdmin = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllUsersService(res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
