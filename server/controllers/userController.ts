@@ -6,7 +6,11 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import path from "path";
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors";
 import userModel, { IUser } from "../models/userModel";
-import { getAllUsersService, getUserById } from "../services/userService";
+import {
+  getAllUsersService,
+  getUserById,
+  updateUserRoleService,
+} from "../services/userService";
 import ErrorHandler from "../utils/ErrorHandler";
 import {
   accessTokenOptions,
@@ -401,6 +405,46 @@ export const getAllUsersByAdmin = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       getAllUsersService(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// update user role -- admin
+export const updateUserRole = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, role } = req.body;
+      const user = await userModel.findById(id);
+      if (!user) {
+        return next(new ErrorHandler("User not found", 400));
+      }
+
+      updateUserRoleService(id, role, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// delete user -- admin
+export const deleteUser = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const user = await userModel.findById(id);
+      if (!user) {
+        return next(new ErrorHandler("User not found", 400));
+      }
+
+      await user.deleteOne({ id });
+      await redis.del(id);
+
+      res.status(201).json({
+        success: true,
+        message: "User deleted successfully",
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
