@@ -1,5 +1,5 @@
 import cloudinary from "cloudinary";
-import { NextFunction, Request } from "express";
+import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors";
 import layoutModel from "../models/layoutModel";
 import ErrorHandler from "../utils/ErrorHandler";
