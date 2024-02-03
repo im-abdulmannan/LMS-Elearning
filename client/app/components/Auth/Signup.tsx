@@ -4,9 +4,9 @@ import { useFormik } from "formik";
 import { FC, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
-    AiFillGithub,
-    AiOutlineEye,
-    AiOutlineEyeInvisible,
+  AiFillGithub,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import * as Yup from "yup";
@@ -147,7 +147,7 @@ const Signup: FC<Props> = ({ setRoute }) => {
           <FcGoogle size={30} className="cursor-pointer mr-2" />
           <AiFillGithub size={30} className="cursor-pointer ml-2" />
         </div>
-        <h5 className="text-center pt-4 font-Poppins text-[14px]">
+        <h5 className="text-center pt-4 font-Poppins text-[14px] dark:text-white text-black">
           Already have an account?{" "}
           <span
             className="text-[#2190ff] pl-1 cursor-pointer underline"

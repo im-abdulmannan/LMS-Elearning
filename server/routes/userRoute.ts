@@ -1,18 +1,18 @@
 import express from "express";
 import {
-    activateUser,
-    deleteUser,
-    getAllUsersByAdmin,
-    getUser,
-    loginUser,
-    logoutUser,
-    registrationUser,
-    socialAuth,
-    updateAccessToken,
-    updateAvatar,
-    updatePassword,
-    updateUserInfo,
-    updateUserRole,
+  activateUser,
+  deleteUser,
+  getAllUsersByAdmin,
+  getUser,
+  loginUser,
+  logoutUser,
+  registrationUser,
+  socialAuth,
+  updateAccessToken,
+  updateAvatar,
+  updatePassword,
+  updateUserInfo,
+  updateUserRole,
 } from "../controllers/userController";
 import { authorizeRole, isAuthenticated } from "../middleware/auth";
 
