@@ -1,5 +1,8 @@
 "use client";
-import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
+import {
+  useLogoutQuery,
+  useSocialAuthMutation,
+} from "@/redux/features/auth/authApi";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,6 +32,10 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
   const { user } = useSelector((state: any) => state.auth);
   const { data } = useSession();
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
+  const [logout, setLogout] = useState(false);
+  const {} = useLogoutQuery(undefined, {
+    skip: !logout ? true : false,
+  });
 
   useEffect(() => {
     if (!user) {
@@ -40,9 +47,14 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
         });
       }
     }
-    if (isSuccess) {
-      toast.success("Welcome back to ELearning!");
-      setOpen(false);
+    if (data === null) {
+      if (isSuccess) {
+        toast.success("Welcome back to ELearning!");
+        setOpen(false);
+      }
+    }
+    if (data === null) {
+      setLogout(true);
     }
   }, [data, isSuccess, setOpen, socialAuth, user]);
 
@@ -95,9 +107,12 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
               {user ? (
                 <Link href={"/profile"}>
                   <Image
-                    src={user.avatar ? user.avatar : avatar}
+                    src={user.avatar ? user.avatar.url : avatar}
                     alt="Profile Photo"
+                    width={30}
+                    height={30}
                     className="w-8 h-8 rounded-full cursor-pointer"
+                    style={{border: activeItem === 5 ? "2px solid cyan": "none"}}
                   />
                 </Link>
               ) : (

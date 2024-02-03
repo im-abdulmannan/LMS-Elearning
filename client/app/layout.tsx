@@ -1,8 +1,11 @@
 "use client";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import { SessionProvider } from "next-auth/react";
 import { Josefin_Sans, Poppins } from "next/font/google";
+import React, { FC, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "../Provider";
+import Loader from "./components/Loader/Loader";
 import "./globals.css";
 import { ThemeProvider } from "./utils/theme.provider";
 
@@ -31,7 +34,7 @@ export default function RootLayout({
         <Providers>
           <SessionProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              {children}
+              <Custom>{children}</Custom>
               <Toaster position="top-center" reverseOrder={false} />
             </ThemeProvider>
           </SessionProvider>
@@ -40,3 +43,8 @@ export default function RootLayout({
     </html>
   );
 }
+
+const Custom: FC<{ children: ReactNode }> = ({ children }) => {
+  const { isLoading } = useLoadUserQuery({});
+  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
+};
