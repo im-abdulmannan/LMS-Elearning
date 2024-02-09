@@ -1,6 +1,7 @@
 import { styles } from "@/app/styles/style";
 import { AddCircle } from "@mui/icons-material";
 import { FC } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   benefits: { title: string }[];
@@ -25,6 +26,21 @@ const CourseData: FC<Props> = ({
 
   const handleAddPrerequisites = () => {
     setPrerequisites([...prerequisites, { title: "" }]);
+  };
+
+  const prevButton = () => {
+    setActive(active - 1);
+  };
+
+  const handleOptions = () => {
+    if (
+      benefits[benefits.length - 1].title !== "" &&
+      prerequisites[prerequisites.length - 1].title !== ""
+    ) {
+      setActive(active + 1);
+    } else {
+      toast.error("Please fill all fields");
+    }
   };
 
   return (
@@ -90,11 +106,17 @@ const CourseData: FC<Props> = ({
       </div>
 
       <div className="flex w-full items-center justify-between">
-        <div className="w-full 800px:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer" onClick={() => prevButton()}>
-            Prev
+        <div
+          className="w-full 800px:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
+          onClick={() => prevButton()}
+        >
+          Prev
         </div>
-        <div className="w-full 800px:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer" onClick={() => prevButton()}>
-            Next
+        <div
+          className="w-full 800px:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
+          onClick={() => handleOptions()}
+        >
+          Next
         </div>
       </div>
     </div>
