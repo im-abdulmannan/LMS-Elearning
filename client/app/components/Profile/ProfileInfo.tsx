@@ -1,8 +1,12 @@
 import { styles } from "@/app/styles/style";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
-import { useUpdateAvatarMutation } from "@/redux/features/user/userApi";
+import {
+  useUpdateAvatarMutation,
+  useUpdateUserMutation,
+} from "@/redux/features/user/userApi";
 import Image from "next/image";
 import React from "react";
+import toast from "react-hot-toast";
 import { AiOutlineCamera } from "react-icons/ai";
 import avatarDefault from "../../../public/assets/Profile.png";
 
@@ -14,6 +18,8 @@ type Props = {
 const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
   const [name, setName] = React.useState(user && user.name);
   const [updateAvatar, { isSuccess, error }] = useUpdateAvatarMutation();
+  const [updateUser, { isSuccess: success, error: updateUserError }] =
+    useUpdateUserMutation();
   const [loadUser, setLoadUser] = React.useState(false);
   const {} = useLoadUserQuery(undefined, {
     skip: loadUser ? false : true,
@@ -33,16 +39,25 @@ const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
   };
 
   React.useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || success) {
       setLoadUser(true);
     }
-    if (error) {
+    if (error || updateUserError) {
       console.log(error);
     }
-  }, [error, isSuccess]);
+    if(success) {
+      toast.success("User updated successfully")
+    }
+  }, [error, isSuccess, success, updateUserError]);
 
   const handleSubmit = async (e: any) => {
-    console.log("Handle Submit");
+    e.preventDefault();
+    if (name !== "") {
+      await updateUser({
+        name: name,
+        email: user.email,
+      });
+    }
   };
 
   return (
@@ -50,7 +65,9 @@ const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
       <div className="w-full flex justify-center">
         <div className="relative">
           <Image
-            src={user.avatar || avatar ? user.avatar.url || avatar : avatarDefault}
+            src={
+              user.avatar || avatar ? user.avatar.url || avatar : avatarDefault
+            }
             alt="Profile Photo"
             width={120}
             height={120}
@@ -84,7 +101,7 @@ const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
               <input
                 type="text"
                 id="name"
-                className={`${styles.input} w-[95%] mb-4 800px:mb-0`}
+                className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -99,7 +116,7 @@ const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
                 type="text"
                 readOnly
                 id="email"
-                className={`${styles.input} w-[95%] mb-4 800px:mb-0`}
+                className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
                 required
                 value={user && user.email}
               />
