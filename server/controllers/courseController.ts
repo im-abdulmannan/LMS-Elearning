@@ -40,8 +40,10 @@ export const editCourse = catchAsyncErrors(
     try {
       const data = req.body;
       const thumbnail = data.thumbnail;
-      if (thumbnail) {
-        await cloudinary.v2.uploader.destroy(thumbnail.public_id);
+      const courseId = req.params.id;
+      const courseData = (await courseModel.findById(courseId)) as any;
+      if (thumbnail && !thumbnail.startsWith("https")) {
+        await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
 
         const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
           folder: "courses",
@@ -53,7 +55,13 @@ export const editCourse = catchAsyncErrors(
         };
       }
 
-      const courseId = req.params.id;
+      if (thumbnail.startsWith("https")) {
+        data.thumbnail = {
+          public_id: courseData?.thumbnail.public_id,
+          url: courseData?.thumbnail.url,
+        };
+      }
+
       const course = await courseModel.findByIdAndUpdate(
         courseId,
         { $set: data },
@@ -107,28 +115,16 @@ export const getSingleCourse = catchAsyncErrors(
 export const getAllCourses = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const isCacheExists = await redis.get("allCourses");
-      if (isCacheExists) {
-        const courses = JSON.parse(isCacheExists);
-
-        res.status(200).json({
-          success: true,
-          courses: courses,
-        });
-      } else {
         const courses = await courseModel
           .find()
           .select(
             "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
           );
 
-        await redis.set("allCourses", JSON.stringify(courses));
-
         res.status(201).json({
           success: true,
           courses: courses,
         });
-      }
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

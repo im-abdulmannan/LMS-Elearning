@@ -226,10 +226,7 @@ export const updateAccessToken = catchAsyncErrors(
 
       await redis.set(user._id, JSON.stringify(user), "EX", 604800);
 
-      res.status(200).json({
-        status: "success",
-        token: accessToken,
-      });
+      next();
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -409,13 +406,15 @@ export const getAllUsersByAdmin = catchAsyncErrors(
 export const updateUserRole = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, role } = req.body;
-      const user = await userModel.findById(id);
-      if (!user) {
+      const { email, role } = req.body;
+      const user = await userModel.findOne({email});
+      if (user) {
+        const id = user._id
+        updateUserRoleService(id, role, res, next);
+      } else {
         return next(new ErrorHandler("User not found", 400));
       }
 
-      updateUserRoleService(id, role, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

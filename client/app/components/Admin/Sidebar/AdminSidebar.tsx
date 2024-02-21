@@ -285,7 +285,7 @@ const AdminSidebar = (props: Props) => {
 
             <Item
               title="Manage Teams"
-              to="/admin/manage-team"
+              to="/admin/team"
               icon={<PeopleOutlined />}
               selected={selected}
               setSelected={setSelected}

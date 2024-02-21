@@ -1,13 +1,14 @@
 "use client";
 
-import CreateCourse from "../../components/Admin/Course/CreateCourse";
-import DashboardHeader from "../../components/Admin/DashboardHeader";
-import AdminSidebar from "../../components/Admin/Sidebar/AdminSidebar";
-import Headings from "../../utils/Heading";
+import EditCourse from "../../../components/Admin/Course/EditCourse";
+import DashboardHeader from "../../../components/Admin/DashboardHeader";
+import AdminSidebar from "../../../components/Admin/Sidebar/AdminSidebar";
+import Headings from "../../../utils/Heading";
 
 type Props = {};
 
-const page = (props: Props) => {
+const page = ({params}: any) => {
+    const id = params.id;
   return (
     <div>
       <Headings
@@ -21,7 +22,7 @@ const page = (props: Props) => {
         </div>
         <div className="w-[85%]">
           <DashboardHeader />
-          <CreateCourse />
+          <EditCourse id={id} />
         </div>
       </div>
     </div>
