@@ -4,7 +4,7 @@ import AdminDashboardHero from "@/app/components/Admin/AdminDashboardHero";
 import AdminSidebar from "@/app/components/Admin/Sidebar/AdminSidebar";
 import { AdminProtected } from "@/app/hooks/adminProtected";
 import Headings from "@/app/utils/Heading";
-import EditHero from "../../components/Admin/Costumization/EditHero";
+import EditHero from "../../components/Admin/Customization/EditHero";
 
 
 type Props = {};

@@ -1,11 +1,9 @@
 "use client";
-
 import AdminDashboardHero from "@/app/components/Admin/AdminDashboardHero";
 import AdminSidebar from "@/app/components/Admin/Sidebar/AdminSidebar";
 import { AdminProtected } from "@/app/hooks/adminProtected";
 import Headings from "@/app/utils/Heading";
-import EditCategories from "../../components/Admin/Customization/EditCategories";
-
+import AllInvoices from "../../components/Admin/Order/AllInvoices";
 
 type Props = {};
 
@@ -24,7 +22,7 @@ const page = (props: Props) => {
           </div>
           <div className="w-[85%]">
             <AdminDashboardHero />
-            <EditCategories />
+            <AllInvoices />
           </div>
         </div>
       </AdminProtected>

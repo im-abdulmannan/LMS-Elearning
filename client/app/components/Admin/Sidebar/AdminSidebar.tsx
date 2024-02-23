@@ -12,10 +12,9 @@ import {
   PeopleOutlined,
   Quiz,
   ReceiptOutlined,
-  Settings,
   VideoCall,
   Web,
-  Wysiwyg,
+  Wysiwyg
 } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import { useTheme } from "next-themes";
@@ -335,13 +334,13 @@ const AdminSidebar = (props: Props) => {
               {!isCollapsed && "Extras"}
             </Typography>
 
-            <Item
+            {/* <Item
               title="Settings"
               to="/admin/settings"
               icon={<Settings />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
 
             <Item
               title="Logout"

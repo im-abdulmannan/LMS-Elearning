@@ -88,3 +88,12 @@ body {
   -webkit-text-fill-color: transparent;
   text-fill-color: transparent;
 }
+
+.hero_animation {
+  background-image: linear-gradient(
+    147.92deg,
+    hsla(239, 76%, 53%, 0.456) 10.41%,
+    hsla(0, 0%, 100%, 0) 89.25%
+  );
+  animation: changeBackgroundColor 8s infinite alternate;
+}

@@ -1,12 +1,13 @@
 import { ThemeSwitcher } from "@/app/utils/ThemeSwitcher";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 
-type Props = {};
+type Props = {
+  open?: boolean;
+  setOpen?: any;
+};
 
-const DashboardHeader: FC<Props> = () => {
-  const [open, setOpen] = useState(false);
-
+const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
   return (
     <div className="w-full flex items-center justify-end p-6 fixed top-5 right-0">
       <ThemeSwitcher />
@@ -35,10 +36,11 @@ const DashboardHeader: FC<Props> = () => {
             </div>
             <p className="px-2 text-black dark:text-white">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-              deleniti illo nemo voluptas numquam sit iure repellat consequuntur!
+              deleniti illo nemo voluptas numquam sit iure repellat
+              consequuntur!
             </p>
             <p className="p-2 text-black dark:text-white text-[14px]">
-                5 days ago
+              5 days ago
             </p>
           </div>
 
@@ -53,10 +55,11 @@ const DashboardHeader: FC<Props> = () => {
             </div>
             <p className="px-2 text-black dark:text-white">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-              deleniti illo nemo voluptas numquam sit iure repellat consequuntur!
+              deleniti illo nemo voluptas numquam sit iure repellat
+              consequuntur!
             </p>
             <p className="p-2 text-black dark:text-white text-[14px]">
-                5 days ago
+              5 days ago
             </p>
           </div>
 
@@ -71,10 +74,11 @@ const DashboardHeader: FC<Props> = () => {
             </div>
             <p className="px-2 text-black dark:text-white">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-              deleniti illo nemo voluptas numquam sit iure repellat consequuntur!
+              deleniti illo nemo voluptas numquam sit iure repellat
+              consequuntur!
             </p>
             <p className="p-2 text-black dark:text-white text-[14px]">
-                5 days ago
+              5 days ago
             </p>
           </div>
         </div>
