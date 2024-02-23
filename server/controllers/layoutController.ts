@@ -22,12 +22,14 @@ export const createLayout = catchAsyncErrors(
 
         const banner = {
           type: "Banner",
-          image: {
-            public_id: result.public_id,
-            url: result.secure_url,
+          banner: {
+            image: {
+              public_id: result.public_id,
+              url: result.secure_url,
+            },
+            title,
+            subtitle,
           },
-          title,
-          subtitle,
         };
 
         await layoutModel.create(banner);
@@ -81,25 +83,34 @@ export const updateLayout = catchAsyncErrors(
 
       if (type === "Banner") {
         const bannerData: any = await layoutModel.findOne({ type: "Banner" });
-        if (bannerData) {
-          await cloudinary.v2.uploader.destroy(bannerData.image.public_id);
-        }
 
         const { image, title, subtitle } = req.body;
-        const result = await cloudinary.v2.uploader.upload(image, {
-          folder: "layout",
-        });
+
+        const data = image.startsWith("https")
+          ? bannerData
+          : await cloudinary.v2.uploader.upload(image, {
+              folder: "layout",
+            });
 
         const banner = {
+          type: "Banner",
           image: {
-            public_id: result.public_id,
-            url: result.secure_url,
+            public_id: image.startsWith("https")
+              ? bannerData.banner.image.public_id
+              : data.public_id,
+            url: image.startsWith("https")
+              ? bannerData.banner.image.url
+              : data.secure_url,
           },
           title,
           subtitle,
         };
 
-        await layoutModel.findByIdAndUpdate(bannerData._id, { banner });
+        if(bannerData) {
+          await layoutModel.findByIdAndUpdate(bannerData._id, { banner });
+        } else {
+          await layoutModel.create(banner);
+        }
       }
 
       if (type === "FAQ") {
@@ -149,12 +160,11 @@ export const updateLayout = catchAsyncErrors(
   }
 );
 
-
 // Get layout by type
 export const getLayoutByType = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { type } = req.body;
+      const { type } = req.params;
       const layout = await layoutModel.findOne({ type });
       if (!layout) {
         return next(new ErrorHandler(`Layout ${type} not found`, 400));
