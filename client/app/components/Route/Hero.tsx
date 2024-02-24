@@ -1,37 +1,110 @@
+/* eslint-disable @next/next/no-img-element */
+import { useGetHeroDataQuery } from "@/redux/features/layout/layout";
+import Image from "next/image";
 import Link from "next/link";
-import { FC } from "react";
+import { useRouter } from "next/navigation";
+import { FC, useState } from "react";
+import { BiSearch } from "react-icons/bi";
 
 type Props = {};
 
 const Hero: FC<Props> = (props) => {
+  const [search, setSearch] = useState("");
+  const { data, refetch } = useGetHeroDataQuery("Banner", {
+    refetchOnMountOrArgChange: true,
+  });
+  const router = useRouter();
+
+  const handleSearch = (e: any) => {
+    if(search === "") {
+      return;
+    } else {
+      router.push(`/courses?title=${search}`);
+    }
+  };
+
   return (
-    <div className="w-[95%] m-auto flex justify-center items-center h-[80vh] 800px:h-[100vh] translate-y-0 opacity-100 transition-all duration-1000 ease-in-out">
-      <div className="w-[90%] 800px:w-[80%]">
-        <h1 className="font-extrabold text-[25px] leading-[35px] sm:text-3xl lg:text-5xl tracking-tight text-center text-black dark:text-white font-Poppins 800px:!leading-[60px]">
-          Unleash your inner <span className="text-gradient">programming</span>{" "}
-          <br />
-          <span className="text-gradient">genius</span> with our community.
-        </h1>
-        <div className="pt-2"></div>
-        <div className="w-full text-center">
-          <p className="800px:block hidden font-poppins 800px:text-[22px] 800px:leading-[32px] text-[16px] leading-[23px] font-normal text-[#000000c6] dark:text-[#A3B3BC] mt-5 mb-10">
-            Empower your programming journey with ELearning <br /> dedicated
-            community and comprehensive resources.
-          </p>
-          <p className="800px:hidden block font-poppins 800px:text-[22px] 800px:leading-[32px] text-[16px] leading-[25px] font-normal text-[#000000c6] dark:text-[#A3B3BC] mt-5 mb-10">
-            Empower your programming journey with ELearning dedicated community
-            and comprehensive resources.
-          </p>
-          <div className="flex w-full justify-center font-Poppins font-[600]">
-            <Link href="/courses">
-              <div className="text-black dark:text-white flex flex-row justify-center items-center py-3 px-6 rounded-full cursor-pointer bg-[#2190ff] min-h-[45px] w-full text-[16px] font-Poppins font-semibold">
-                Explore Courses
-              </div>
-            </Link>
-          </div>
+    <div className="w-full 1000px:flex items-center">
+    <div className="absolute top-[100px] 1000px:top-[unset] 1500px:h-[700px] 1500px:w-[700px] 1100px:h-[600px] 1100px:w-[600px] h-[40vh] left-5 w-[40vh] hero_animation rounded-[50%] 1100px:left-8 1500px:left-14"></div>
+    <div className="1000px:w-[40%] flex 1000px:min-h-screen items-center justify-end pt-[70px] 1000px:pt-[0] z-10">
+      {data?.layout?.banner?.image?.url ? (
+        <Image
+          src={data?.layout?.banner?.image?.url}
+          width={400}
+          height={400}
+          alt=""
+          className="object-contain 1100px:max-w-[90%] w-[90%] 1500px:max-w-[85%] h-[auto] z-[10]"
+        />
+      ) : (
+        <Image
+          src={require("../../../public/assets/hero-banner-1.png")}
+          width={400}
+          height={400}
+          alt=""
+          className="object-contain 1100px:max-w-[90%] w-[90%] 1500px:max-w-[85%] h-[auto] z-[10]"
+        />
+      )}
+    </div>
+    <div className="1000px:w-[60%] flex flex-col items-center 1000px:mt-[0px] text-center 1000px:text-left mt-[150px]">
+      <h2 className="dark:text-white text-[#000000c7] text-[30px] px-3 w-full 1000px:text-[70px] font-[600] font-Josefin py-2 1000px:leading-[75px] 1500px:w-[60%] 1100px:w-[78%]">
+        {data?.layout?.banner?.title
+          ? data.layout.banner.title
+          : "Improve Your Online Learning Experience Better Instantly"}
+      </h2>
+      <br />
+      <p className="dark:text-[#edfff4] text-[#000000ac] font-Josefin font-[600] text-[18px] 1500px:!w-[55%] 1100px:!w-[78%]">
+        {data?.layout?.banner?.subTitle
+          ? data?.layout?.banner?.subTitle
+          : "We have 20K+ Online courses & 500k+ Online registered students. Find your desired coursed from them."}
+      </p>
+      <br />
+      <br />
+      <div className="1500px:w-[55%] 1100px:w-[78%] w-[90%] h-[50px] bg-transparent relative">
+        <input
+          type="search"
+          placeholder="Search Courses..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-transparent border dark:border-none dark:bg-[#575757] dark:placeholder:text-[#ffffffdd] rounded-[5px] p-2 w-full h-full outline-none text-[#0000004e] dark:text-[#ffffffe6] text-[20px] font-[500] font-Josefin"
+        />
+        <div
+          className="absolute flex items-center justify-center w-[50px] cursor-pointer h-[50px] right-0 top-0 bg-[#39c1f3] rounded-r-[5px]"
+          onClick={handleSearch}
+        >
+          <BiSearch className="text-white" size={30} />
         </div>
       </div>
+      <br />
+      <br />
+      <div className="1500px:w-[55%] 1100px:w-[78%] w-[90%] flex items-center">
+        <Image
+          src={require("../../../public/assets/client-1.jpg")}
+          alt=""
+          className="rounded-full"
+        />
+        <Image
+          src={require("../../../public/assets/client-2.jpg")}
+          alt=""
+          className="rounded-full ml-[-20px]"
+        />
+        <Image
+          src={require("../../../public/assets/client-3.jpg")}
+          alt=""
+          className="rounded-full ml-[-20px]"
+        />
+        <p className="font-Josefin dark:text-[#edfff4] text-[#000000b3] 1000px:pl-3 text-[18px] font-[600]">
+          500K+ People already trusted us.{" "}
+          <Link
+            href="/courses"
+            className="dark:text-[#46e256] text-[crimson]"
+          >
+            View Courses
+          </Link>{" "}
+        </p>
+      </div>
+      <br />
     </div>
+  </div>
   );
 };
 
