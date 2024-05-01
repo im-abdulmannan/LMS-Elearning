@@ -8,13 +8,30 @@ import { IOrder } from "../models/orderModel";
 import userModel from "../models/userModel";
 import { getAllOrdersService, newOrder } from "../services/orderService";
 import ErrorHandler from "../utils/ErrorHandler";
+import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Create order
 export const createOrder = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { courseId, payment_info } = req.body as IOrder;
+
+      if (payment_info) {
+        if ("id" in payment_info) {
+          const paymentIntentId = payment_info.id;
+          const paymentIntent = await stripe.paymentIntents.retrieve(
+            paymentIntentId
+          );
+
+          if (paymentIntent.status !== "succeeded") {
+            return next(new ErrorHandler("Payment failed", 400));
+          }
+        }
+      }
+
       const user = await userModel.findById(req.user?._id);
 
       const isCourseExistByUser = user?.courses.some(
@@ -67,6 +84,7 @@ export const createOrder = catchAsyncErrors(
       }
 
       user?.courses.push(course._id);
+      await redis.set(req.user?._id, JSON.stringify(user));
       await user?.save();
 
       await notificationModel.create({
@@ -93,6 +111,40 @@ export const getAllOrdersByAdmin = catchAsyncErrors(
       getAllOrdersService(res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Send stripe Publishable request
+export const sendStripePublishableKey = catchAsyncErrors(
+  async (req: Request, res: Response) => {
+    res.status(200).json({
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    });
+  }
+);
+
+// new Payment
+export const newPayment = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const myPayment = await stripe.paymentIntents.create({
+        amount: req.body.amount,
+        currency: "USD",
+        metadata: {
+          company: "E-Learning",
+        },
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        client_secret: myPayment.client_secret,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
     }
   }
 );
