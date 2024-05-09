@@ -1,13 +1,13 @@
 import { styles } from "@/app/styles/style";
 import CoursePlayer from "@/app/utils/CoursePlayer";
 import Ratings from "@/app/utils/Ratings";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import { Elements } from "@stripe/react-stripe-js";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import { useSelector } from "react-redux";
 import { format } from "timeago.js";
 import CheckOutForm from "../Payment/CheckOutForm";
 import CourseContentList from "./CourseContentList";
@@ -16,11 +16,14 @@ type Props = {
   data: any;
   clientSecret: string;
   stripePromise: any;
+  setRoute: any;
+  setOpen: any;
 };
 
-const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
+const CourseDetails = ({ data, clientSecret, stripePromise, setRoute, setOpen:openAuthModal }: Props) => {
+  const {data: userData} = useLoadUserQuery(undefined, {});
+  const user = userData?.user;
   const [open, setOpen] = useState(false);
-  const { user } = useSelector((state: any) => state.auth);
   const discountPercentage =
     ((data?.estimatedPrice - data.price) / data?.estimatedPrice) * 100;
 
@@ -30,7 +33,12 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
     user && user?.courses?.find((item: any) => item._id === data._id);
 
   const handleOrder = (e: any) => {
-    setOpen(true);
+    if(user) {
+      setOpen(true);
+    } else {
+      setRoute("Login")
+      openAuthModal(true);
+    }
   };
 
   return (

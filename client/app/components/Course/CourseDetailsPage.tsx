@@ -3,8 +3,8 @@
 import Headings from "@/app/utils/Heading";
 import { useGetCourseDetailsQuery } from "@/redux/features/courses/coursesApi";
 import {
-    useCreatePaymentIntentMutation,
-    useGetStripePublishableKeyQuery,
+  useCreatePaymentIntentMutation,
+  useGetStripePublishableKeyQuery,
 } from "@/redux/features/orders/orderApi";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
@@ -69,6 +69,8 @@ const CourseDetailsPage = ({ id }: Props) => {
               data={data.course}
               stripePromise={stripePromise}
               clientSecret={clientSecret}
+              setRoute={setRoute}
+            setOpen={setOpen}
             />
           )}
           <Footer />
