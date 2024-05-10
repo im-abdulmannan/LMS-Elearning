@@ -2,7 +2,7 @@ import ejs from "ejs";
 import { NextFunction, Request, Response } from "express";
 import path from "path";
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors";
-import courseModel from "../models/courseModel";
+import courseModel, { ICourse } from "../models/courseModel";
 import notificationModel from "../models/notificationModel";
 import { IOrder } from "../models/orderModel";
 import userModel from "../models/userModel";
@@ -41,7 +41,7 @@ export const createOrder = catchAsyncErrors(
         return next(new ErrorHandler("Course already exists", 400));
       }
 
-      const course = await courseModel.findById(courseId);
+      const course:ICourse | null = await courseModel.findById(courseId);
       if (!course) {
         return next(new ErrorHandler("Course not found", 404));
       }
@@ -93,7 +93,7 @@ export const createOrder = catchAsyncErrors(
         message: `You have a new order for ${course.name}`,
       });
 
-      course.purchased ? (course.purchased += 1) : course.purchased;
+      course.purchased += 1;
 
       await course.save();
 

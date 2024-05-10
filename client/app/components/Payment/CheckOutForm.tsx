@@ -2,21 +2,25 @@ import { styles } from "@/app/styles/style";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import { useCreateOrderMutation } from "@/redux/features/orders/orderApi";
 import {
-    LinkAuthenticationElement,
-    PaymentElement,
-    useElements,
-    useStripe,
+  LinkAuthenticationElement,
+  PaymentElement,
+  useElements,
+  useStripe,
 } from "@stripe/react-stripe-js";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import socketIO from "socket.io-client";
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketId = socketIO(ENDPOINT, {transports: ["websocket"]})
 
 type Props = {
   setOpen: any;
   data: any;
+  user: any;
 };
 
-const CheckOutForm = ({ setOpen, data }: Props) => {
+const CheckOutForm = ({ setOpen, data, user }: Props) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState<any>("");
@@ -48,13 +52,18 @@ const CheckOutForm = ({ setOpen, data }: Props) => {
   useEffect(() => {
     if (orderData) {
       setLoadUser(true);
+      socketId.emit("notification", {
+        title: `New Order Received`,
+        message: `You have a new order in ${data.name}`,
+        userId: user._id,
+      })
       redirect(`/course-access/${data._id}`);
     }
     if (error && "data" in error) {
       const errorMessage = error as any;
       toast.error(errorMessage.data.message);
     }
-  }, [data._id, error, orderData]);
+  }, [data, error, orderData, user]);
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>

@@ -16,6 +16,7 @@ import { styles } from "../../../app/styles/style";
 type Props = {
   setRoute: (route: string) => void;
   setOpen: (open: boolean) => void;
+  refetch: any;
 };
 
 const Schema = Yup.object().shape({
@@ -23,7 +24,7 @@ const Schema = Yup.object().shape({
   password: Yup.string().required("Password is required").min(8),
 });
 
-const Login: FC<Props> = ({ setRoute, setOpen }) => {
+const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
   const [login, { error, isSuccess }] = useLoginMutation();
 
@@ -42,6 +43,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
     if (isSuccess) {
       toast.success("Welcome back to ELearning!");
       setOpen(false);
+      refetch();
     }
     if (error) {
       if ("data" in error) {

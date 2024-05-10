@@ -276,7 +276,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise, setRoute, setOpen:op
                     <CheckOutForm
                       setOpen={setOpen}
                       data={data}
-                      // user={user}
+                      user={user}
                       // refetch={refetch}
                     />
                   </Elements>

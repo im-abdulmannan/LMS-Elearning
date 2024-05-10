@@ -115,16 +115,16 @@ export const getSingleCourse = catchAsyncErrors(
 export const getAllCourses = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const courses = await courseModel
-          .find()
-          .select(
-            "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
-          );
+      const courses = await courseModel
+        .find()
+        .select(
+          "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+        );
 
-        res.status(201).json({
-          success: true,
-          courses: courses,
-        });
+      res.status(201).json({
+        success: true,
+        courses: courses,
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -251,6 +251,8 @@ export const addAnswerToQuestion = catchAsyncErrors(
       const newAnswer: any = {
         user: req.user,
         answer: answer,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       question.questionReplies?.push(newAnswer);
@@ -340,12 +342,16 @@ export const addReview = catchAsyncErrors(
       }
 
       await course?.save();
-      const notification = {
-        title: "New Review Received",
-        message: `${req.user?.name} has given a new review for ${course?.name}`,
-      };
+
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7 days
 
       // Create new Notification
+      await notificationModel.create({
+        user: req.user?._id,
+        title: "New Review Received",
+        message: `${req.user?.name} has given a new review for ${course?.name}`,
+      });
+
       res.status(200).json({
         success: true,
         course: course,
@@ -382,6 +388,8 @@ export const addReplyToReview = catchAsyncErrors(
       const replyData: any = {
         user: req.user,
         comment: comment,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       if (!review.commentReplies) {
