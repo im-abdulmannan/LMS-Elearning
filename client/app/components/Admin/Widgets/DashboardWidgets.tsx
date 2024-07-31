@@ -91,7 +91,7 @@ const DashboardWidgets: FC<Props> = ({ open, value }) => {
         }
       }
     }
-  }, []);
+  }, [data, isLoading, orderData, orderLoading]);
 
   return (
     <div className="mt-[30px] min-h-screen ml-8">

@@ -29,7 +29,7 @@ const Profile: FC<Props> = ({ user }) => {
         .filter((course: any) => course !== undefined);
       setCourses(filteredCourses);
     }
-  }, [data]);
+  }, [data, user.courses]);
 
   const logoutHandler = async () => {
     setLogout(true);

@@ -6,7 +6,7 @@ import CourseContentMedia from "./CourseContentMedia";
 
 type Props = {
     id:string;
-    user: any;
+    user?: any;
 }
 
 const CourseContent = ({id, user}: Props) => {

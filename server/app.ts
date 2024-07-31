@@ -2,6 +2,7 @@ require("dotenv").config();
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
+import rateLimit from "express-rate-limit";
 import { ErrorMiddleware } from "./middleware/errors";
 import analyticsRouter from "./routes/analyticsRoute";
 import courseRouter from "./routes/courseRoute";
@@ -25,6 +26,14 @@ app.use(
   })
 );
 
+// api request limit
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+})
+
 // Routes
 app.use("/api/v1", userRouter);
 app.use("/api/v1", courseRouter);
@@ -47,4 +56,5 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(err);
 });
 
+app.use(limiter);
 app.use(ErrorMiddleware);

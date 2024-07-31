@@ -28,7 +28,7 @@ const Signup: FC<Props> = ({ setRoute }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      const message = data.message || "Registration Successful";
+      const message = data?.message || "Registration Successful";
       toast.success(message);
       setRoute("Verification");
     }

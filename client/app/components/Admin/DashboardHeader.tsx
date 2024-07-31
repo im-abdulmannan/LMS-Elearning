@@ -3,7 +3,7 @@ import {
   useGetAllNotificationsQuery,
   useUpdateNotificationStatusMutation,
 } from "@/redux/features/notifications/notificationsApi";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
@@ -22,24 +22,17 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
   const [updateNotificationsStatus, { isSuccess }] =
     useUpdateNotificationStatusMutation();
   const [notifications, setNotifications] = useState<any>([]);
-  // const audio = useState(
-  //   new Audio(
-  //     "https://res.cloudinary.com/dasdrngo1/video/upload/v1715355770/notifications/mixkit-bubble-pop-up-alert-notification-2357_wbwviv.wav"
-  //   )
-  // );
-
-  // const playNotificationSound = () => {
-  //   audio.play();
-  // };
-  const notificationAudio = new Audio(
-    "https://res.cloudinary.com/dasdrngo1/video/upload/v1715355770/notifications/mixkit-bubble-pop-up-alert-notification-2357_wbwviv.wav"
+  const audioRef = useRef(
+    new Audio(
+      "https://res.cloudinary.com/dasdrngo1/video/upload/v1715355770/notifications/mixkit-bubble-pop-up-alert-notification-2357_wbwviv.wav"
+    )
   );
 
   const playNotificationSound = () => {
-    notificationAudio.play().catch((error) => {
-      console.error("Error playing notification sound:", error);
-    });
-  };
+    audioRef.current.play().catch((err) => {
+      console.error("Error: ", err);
+    })
+  }
 
   useEffect(() => {
     if (data) {
@@ -51,15 +44,15 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
     if (isSuccess) {
       refetch();
     }
-    notificationAudio.load();
-  }, [data, isSuccess, notificationAudio, refetch]);
+    audioRef.current.load();
+  }, [data, isSuccess, refetch]);
 
   useEffect(() => {
     socketId.on("newNotification", (data) => {
       refetch();
       playNotificationSound();
     });
-  }, [playNotificationSound, refetch]);
+  }, [refetch]);
 
   const handleNotificationStatusChange = async (id: string) => {
     await updateNotificationsStatus(id);

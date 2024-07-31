@@ -13,7 +13,7 @@ import Headings from "../utils/Heading";
 
 type Props = {};
 
-const page = ({}: Props) => {
+const Page = ({}: Props) => {
   const searchParams = useSearchParams();
   const search = searchParams?.get("title");
   const { data, isLoading } = useGetUserAllCoursesQuery(undefined, {});
@@ -115,4 +115,4 @@ const page = ({}: Props) => {
   );
 };
 
-export default page;
+export default Page;
