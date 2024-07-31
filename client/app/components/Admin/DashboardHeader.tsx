@@ -22,14 +22,23 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
   const [updateNotificationsStatus, { isSuccess }] =
     useUpdateNotificationStatusMutation();
   const [notifications, setNotifications] = useState<any>([]);
-  const audio = useState(
-    new Audio(
-      "https://res.cloudinary.com/dasdrngo1/video/upload/v1715355770/notifications/mixkit-bubble-pop-up-alert-notification-2357_wbwviv.wav"
-    )
+  // const audio = useState(
+  //   new Audio(
+  //     "https://res.cloudinary.com/dasdrngo1/video/upload/v1715355770/notifications/mixkit-bubble-pop-up-alert-notification-2357_wbwviv.wav"
+  //   )
+  // );
+
+  // const playNotificationSound = () => {
+  //   audio.play();
+  // };
+  const notificationAudio = new Audio(
+    "https://res.cloudinary.com/dasdrngo1/video/upload/v1715355770/notifications/mixkit-bubble-pop-up-alert-notification-2357_wbwviv.wav"
   );
 
   const playNotificationSound = () => {
-    audio.play();
+    notificationAudio.play().catch((error) => {
+      console.error("Error playing notification sound:", error);
+    });
   };
 
   useEffect(() => {
@@ -42,8 +51,8 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
     if (isSuccess) {
       refetch();
     }
-    audio.load();
-  }, [audio, data, isSuccess, refetch]);
+    notificationAudio.load();
+  }, [data, isSuccess, notificationAudio, refetch]);
 
   useEffect(() => {
     socketId.on("newNotification", (data) => {

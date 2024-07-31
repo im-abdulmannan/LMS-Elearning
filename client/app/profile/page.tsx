@@ -1,6 +1,7 @@
 "use client";
 import { FC, useState } from "react";
 import { useSelector } from "react-redux";
+import Footer from "../components/Footer/Footer";
 import Header from "../components/Header";
 import Profile from "../components/Profile/Profile";
 import Protected from "../hooks/useProtected";
@@ -15,7 +16,7 @@ const page: FC<Props> = (props) => {
   const {user} = useSelector((state:any) => state.auth);
 
   return (
-    <div>
+    <div className="min-h-screen">
       <Protected>
         <Headings
           title={`${user.name} Profile`}
@@ -30,6 +31,7 @@ const page: FC<Props> = (props) => {
           route={route}
         />
       <Profile user={user} />
+      <Footer />
       </Protected>
     </div>
   );

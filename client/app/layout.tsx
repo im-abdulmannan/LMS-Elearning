@@ -1,7 +1,7 @@
 "use client";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import { SessionProvider } from "next-auth/react";
-import { Josefin_Sans, Poppins } from "next/font/google";
+import { Cedarville_Cursive, Josefin_Sans, Poppins } from "next/font/google";
 import React, { FC, ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import socketIO from "socket.io-client";
@@ -24,6 +24,12 @@ const josefin = Josefin_Sans({
   variable: "--font-Josefin",
 });
 
+const cursive = Cedarville_Cursive({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-Cursive",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
+        className={`${poppins.variable} ${josefin.variable} ${cursive.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
       >
         <Providers>
           <SessionProvider>
